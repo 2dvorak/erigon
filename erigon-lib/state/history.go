@@ -1179,10 +1179,17 @@ func (ht *HistoryRoTx) historySeekInFiles(key []byte, txNum uint64) ([]byte, boo
 	// Files list of II and History is different
 	// it means II can't return index of file, but can return TxNum which History will use to find own file
 	ok, histTxNum := ht.iit.seekInFiles(key, txNum)
+	fmt.Printf("historySeekInFiles seekInFiles key=%x txNum=%d histTxNum=%d\n", key, txNum, histTxNum)
 	if !ok {
 		return nil, false, nil
 	}
 	historyItem, ok := ht.getFile(histTxNum)
+	fmt.Printf("historySeekInFiles getFile key=%x txNum=%d historyItem=%v\n", key, txNum, historyItem)
+	fmt.Printf("historyItem.src.decompressor.FileName() %s\n", historyItem.src.decompressor.FileName())
+	fmt.Printf("historyItem.src.index.FileName() %s\n", historyItem.src.index.FileName())
+	//fmt.Printf("historyItem.src.bindex.FileName() %s\n", historyItem.src.bindex.FileName())
+	//fmt.Printf("historyItem.src.bm.FileName() %s\n", historyItem.src.bm.FileName())
+	//fmt.Printf("historyItem.src.existence.FileName %s\n", historyItem.src.existence.FileName)
 	if !ok {
 		return nil, false, fmt.Errorf("hist file not found: key=%x, %s.%d-%d", key, ht.h.filenameBase, histTxNum/ht.h.aggregationStep, histTxNum/ht.h.aggregationStep)
 	}
@@ -1191,6 +1198,8 @@ func (ht *HistoryRoTx) historySeekInFiles(key []byte, txNum uint64) ([]byte, boo
 		return nil, false, nil
 	}
 	offset, ok := reader.Lookup(ht.encodeTs(histTxNum, key))
+	fmt.Printf("historySeekInFiles offset %d ok %v\n", offset, ok)
+	fmt.Printf("historySeekInFiles encodeTs %x\n", ht.encodeTs(histTxNum, key))
 	if !ok {
 		return nil, false, nil
 	}
@@ -1198,6 +1207,7 @@ func (ht *HistoryRoTx) historySeekInFiles(key []byte, txNum uint64) ([]byte, boo
 	g.Reset(offset)
 
 	v, _ := g.Next(nil)
+	fmt.Printf("ht.h.filenameBase %s\n", ht.h.filenameBase)
 	if traceGetAsOf == ht.h.filenameBase {
 		fmt.Printf("GetAsOf(%s, %x, %d) -> %s, histTxNum=%d, isNil(v)=%t\n", ht.h.filenameBase, key, txNum, g.FileName(), histTxNum, v == nil)
 	}
@@ -1274,6 +1284,7 @@ func (ht *HistoryRoTx) encodeTs(txNum uint64, key []byte) []byte {
 // HistorySeek searches history for a value of specified key before txNum
 // second return value is true if the value is found in the history (even if it is nil)
 func (ht *HistoryRoTx) HistorySeek(key []byte, txNum uint64, roTx kv.Tx) ([]byte, bool, error) {
+	// 여기에 찾는 데이터 있는데 분석 필요
 	v, ok, err := ht.historySeekInFiles(key, txNum)
 	if err != nil {
 		return nil, ok, err
@@ -1307,6 +1318,7 @@ func (ht *HistoryRoTx) valsCursorDup(tx kv.Tx) (c kv.CursorDupSort, err error) {
 }
 
 func (ht *HistoryRoTx) historySeekInDB(key []byte, txNum uint64, tx kv.Tx) ([]byte, bool, error) {
+	fmt.Printf("historyLargeValues %v\n", ht.h.historyLargeValues)
 	if ht.h.historyLargeValues {
 		c, err := ht.valsCursor(tx)
 		if err != nil {
@@ -1317,6 +1329,7 @@ func (ht *HistoryRoTx) historySeekInDB(key []byte, txNum uint64, tx kv.Tx) ([]by
 		binary.BigEndian.PutUint64(seek[len(key):], txNum)
 
 		kAndTxNum, val, err := c.Seek(seek)
+		fmt.Printf("historySeekInDB %v %v %v %v\n", key, txNum, seek, kAndTxNum)
 		if err != nil {
 			return nil, false, err
 		}
@@ -1331,6 +1344,7 @@ func (ht *HistoryRoTx) historySeekInDB(key []byte, txNum uint64, tx kv.Tx) ([]by
 		return nil, false, err
 	}
 	val, err := c.SeekBothRange(key, ht.encodeTs(txNum, nil))
+	fmt.Printf("historySeekInDB not large %v %v %v\n", key, txNum, val)
 	if err != nil {
 		return nil, false, err
 	}

@@ -21,6 +21,7 @@ import (
 	"container/heap"
 	"context"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math"
@@ -1463,6 +1464,11 @@ func (dt *DomainRoTx) getFromFiles(filekey []byte) (v []byte, found bool, fileSt
 
 		var offset uint64
 		v, found, offset, err = dt.getLatestFromFile(i, filekey)
+		accBuf, _ := hex.DecodeString("05a56E2D52c817161883f50c441c3228CFe54d9f")
+		if bytes.Equal(accBuf, filekey) {
+			fmt.Printf("getLatestFromFile %x %v %v %v\n", v, found, offset, err)
+			fmt.Printf("startTxNum %d, endTxNum %d\n", dt.files[i].startTxNum, dt.files[i].endTxNum)
+		}
 		if err != nil {
 			return nil, false, 0, 0, err
 		}
@@ -1511,6 +1517,7 @@ func (dt *DomainRoTx) GetAsOf(key []byte, txNum uint64, roTx kv.Tx) ([]byte, boo
 		return v, v != nil, nil
 	}
 	v, _, _, err = dt.GetLatest(key, nil, roTx)
+	fmt.Printf("GetLatest %v %v\n", v, err)
 	if err != nil {
 		return nil, false, err
 	}
@@ -1601,6 +1608,10 @@ func (dt *DomainRoTx) getLatestFromDb(key []byte, roTx kv.Tx) ([]byte, uint64, b
 	if dt.d.largeVals {
 		var fullkey []byte
 		fullkey, v, err = valsC.Seek(key)
+		accBuf, _ := hex.DecodeString("05a56E2D52c817161883f50c441c3228CFe54d9f")
+		if bytes.Equal(accBuf, key) {
+			fmt.Printf("fullkey %v\n", fullkey)
+		}
 		if err != nil {
 			return nil, 0, false, fmt.Errorf("valsCursor.Seek: %w", err)
 		}
@@ -1613,6 +1624,10 @@ func (dt *DomainRoTx) getLatestFromDb(key []byte, roTx kv.Tx) ([]byte, uint64, b
 		foundInvStep = fullkey[len(fullkey)-8:]
 	} else {
 		_, stepWithVal, err := valsC.SeekExact(key)
+		accBuf, _ := hex.DecodeString("05a56E2D52c817161883f50c441c3228CFe54d9f")
+		if bytes.Equal(accBuf, key) {
+			fmt.Printf("stepWithVal %x\n", stepWithVal)
+		}
 		if err != nil {
 			return nil, 0, false, fmt.Errorf("valsCursor.SeekExact: %w", err)
 		}
@@ -1655,6 +1670,10 @@ func (dt *DomainRoTx) GetLatest(key1, key2 []byte, roTx kv.Tx) ([]byte, uint64, 
 	}
 
 	v, foundStep, found, err = dt.getLatestFromDb(key, roTx)
+	accBuf, _ := hex.DecodeString("05a56E2D52c817161883f50c441c3228CFe54d9f")
+	if bytes.Equal(accBuf, key) {
+		fmt.Printf("getLatestFromDb %v %v %v %v\n", v, foundStep, found, err)
+	}
 	if err != nil {
 		return nil, 0, false, fmt.Errorf("getLatestFromDb: %w", err)
 	}
@@ -1663,6 +1682,9 @@ func (dt *DomainRoTx) GetLatest(key1, key2 []byte, roTx kv.Tx) ([]byte, uint64, 
 	}
 
 	v, foundInFile, _, endTxNum, err := dt.getFromFiles(key)
+	if bytes.Equal(accBuf, key) {
+		fmt.Printf("getFromFiles %v %v %v %v\n", v, foundInFile, endTxNum, err)
+	}
 	if err != nil {
 		return nil, 0, false, fmt.Errorf("getFromFiles: %w", err)
 	}

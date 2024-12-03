@@ -55,13 +55,19 @@ func (hr *HistoryReaderV3) ResetReadSet()                     {}
 func (hr *HistoryReaderV3) DiscardReadList()                  {}
 
 func (hr *HistoryReaderV3) ReadAccountData(address common.Address) (*accounts.Account, error) {
+	fmt.Printf("ReadAccountData %v %v %v\n", kv.AccountsDomain, address[:], hr.txNum)
 	enc, ok, err := hr.ttx.DomainGetAsOf(kv.AccountsDomain, address[:], nil, hr.txNum)
+
 	if err != nil || !ok || len(enc) == 0 {
 		if hr.trace {
 			fmt.Printf("ReadAccountData [%x] => []\n", address)
 		}
 		return nil, err
 	}
+	// 00084563918244f400000000
+	// 0104074fb9a216cb6c0e0000
+	// 0104074fb9a216cb6c0e0000
+	fmt.Printf("domainget %x %v\n", enc, err)
 	var a accounts.Account
 	if err := accounts.DeserialiseV3(&a, enc); err != nil {
 		return nil, fmt.Errorf("ReadAccountData(%x): %w", address, err)

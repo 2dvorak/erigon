@@ -637,6 +637,7 @@ func (hph *HexPatriciaHashed) computeCellHashLen(cell *cell, depth int) int {
 }
 
 func (hph *HexPatriciaHashed) computeCellHash(cell *cell, depth int, buf []byte) ([]byte, error) {
+	//fmt.Printf("computeCellHash %v %d 0x%x\n", cell, depth, buf)
 	var err error
 	var storageRootHash [length.Hash]byte
 	storageRootHashIsSet := false
@@ -1259,6 +1260,7 @@ func (hph *HexPatriciaHashed) RootHash() ([]byte, error) {
 }
 
 func (hph *HexPatriciaHashed) Process(ctx context.Context, updates *Updates, logPrefix string) (rootHash []byte, err error) {
+	//fmt.Printf("Process %v\n", updates)
 	var (
 		m      runtime.MemStats
 		ki     uint64

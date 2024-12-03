@@ -1,0 +1,29 @@
+ReadAccountData accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 356722900
+DomainGetAsOf accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 356722900
+historySeekInFiles seekInFiles key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=356722900 histTxNum=389143078
+historySeekInFiles getFile key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=356722900 historyItem={<nil> <nil> 300000000 400000000 3 0xc0047f8230}
+historyItem.src.decompressor.FileName() v1-accounts.192-256.v
+historyItem.src.index.FileName() v1-accounts.192-256.vi
+historySeekInFiles offset 178310928 ok true
+historySeekInFiles encodeTs 000000001731da2605a56e2d52c817161883f50c441c3228cfe54d9f
+ht.h.filenameBase accounts
+domainget 0104021fc20000 <nil>
+ReadAccountData accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 5
+DomainGetAsOf accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 5
+historySeekInFiles seekInFiles key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=5 histTxNum=11
+historySeekInFiles getFile key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=5 historyItem={<nil> <nil> 0 100000000 0 0xc0047e5cc0}
+historyItem.src.decompressor.FileName() v1-accounts.0-64.v
+historyItem.src.index.FileName() v1-accounts.0-64.vi
+historySeekInFiles offset 108128725 ok true
+historySeekInFiles encodeTs 000000000000000b05a56e2d52c817161883f50c441c3228cfe54d9f
+ht.h.filenameBase accounts
+domainget 00084563918244f400000000 <nil>
+ReadAccountData accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 3
+DomainGetAsOf accounts [5 165 110 45 82 200 23 22 24 131 245 12 68 28 50 40 207 229 77 159] 3
+historySeekInFiles seekInFiles key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=3 histTxNum=3
+historySeekInFiles getFile key=05a56e2d52c817161883f50c441c3228cfe54d9f txNum=3 historyItem={<nil> <nil> 0 100000000 0 0xc0047e5cc0}
+historyItem.src.decompressor.FileName() v1-accounts.0-64.v
+historyItem.src.index.FileName() v1-accounts.0-64.vi
+historySeekInFiles offset 108128724 ok true
+historySeekInFiles encodeTs 000000000000000305a56e2d52c817161883f50c441c3228cfe54d9f
+ht.h.filenameBase accounts
